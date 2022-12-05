@@ -2,9 +2,7 @@ my @stacks;
 
 for $*ARGFILES.IO.lines -> $line {
     if $line ~~ /'['/ {
-        my $num = ($line.chars + 1) / 4;
-        for ^$num -> $st {
-            my $cr = $line.substr($st * 4 + 1, 1);
+        for $line.comb.rotor(4, :partial)».[1].kv -> $st, $cr {
             @stacks[$st].unshift($cr) unless $cr eq ' ';
         }
     } elsif $line ~~ /'move ' (\d+) ' from ' (\d+) ' to ' (\d+)/ {
