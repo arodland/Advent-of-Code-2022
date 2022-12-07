@@ -20,6 +20,7 @@ for $*ARGFILES.IO.lines {
 }
 
 my $avail = 70000000 - %aggsize{'/'};
-my $todelete = 30000000 - $avail;
+my $need_delete = 30000000 - $avail;
 
-say (%aggsize.values.grep: * >= $todelete).sort.[0];
+my $to_delete = (%aggsize.pairs.grep: *.value >= $need_delete).sort({ $^a.value <=> $^b.value }).[0];
+say "delete { $to_delete.key } to free up { $to_delete.value } bytes";
