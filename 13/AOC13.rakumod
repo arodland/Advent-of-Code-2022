@@ -14,21 +14,14 @@ class ListBuilder is export {
     method termlist ($/) { make $<term>.Array».made }
 }
 
-sub lcmp ($l, $r) is export {
-    if $l ~~ Int && $r ~~ Int {
-        return $l <=> $r;
-    } elsif $l ~~ Array && $r ~~ Array {
-        for @$l Z @$r -> ($ll, $rr) {
-            my $cmp = lcmp($ll, $rr);
-            return $cmp if $cmp;
-        }
-        return $l.elems <=> $r.elems;
-    } elsif ($l ~~ Array && $r ~~ Int) {
-        return lcmp($l, [$r]);
-    } elsif ($l ~~ Int && $r ~~ Array) {
-        return lcmp([$l], $r);
-    } else {
-        die "Can't compare {$l.raku} to {$r.raku}";
+proto sub lcmp (|) is export {*};
+multi sub lcmp ($l, $r) { $l <=> $r }
+multi sub lcmp (@l, @r) {
+    for @l Z @r -> ($ll, $rr) {
+        my $cmp = lcmp($ll, $rr);
+        return $cmp if $cmp;
     }
+    return @l.elems <=> @r.elems;
 }
-
+multi sub lcmp (@l, $r) { lcmp(@l, [$r]) }
+multi sub lcmp ($l, @r) { lcmp([$l], @r) }
