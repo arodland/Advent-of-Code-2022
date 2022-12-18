@@ -1,4 +1,4 @@
-my ($x, $cycle, $str) = (1, 0, 0);
+my ($x, $cycle) = (1, 0);
 
 sub cycle {
     $cycle = $cycle % 40 + 1;
